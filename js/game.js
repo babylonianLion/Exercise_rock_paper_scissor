@@ -50,27 +50,43 @@ function playRound(playerSelection, computerSelection){
     }
 }
 
-function game(){
-    let winCounter = 0;
-    let loseCounter = 0;
-    for(let x = 0; x < 5; x++){
-        let playerSelection = prompt("Please select your choice.")
-        let computerSelection = getComputerChoice();
-        result = playRound(playerSelection, computerSelection);
-        if(result.charAt(4) == "w"){
-            winCounter++;
-        }
-        else if(result.charAt(4) == "l"){
-            loseCounter++;
-        }
+const buttons = document.querySelectorAll("button");
+const div = document.createElement("div");
+const body = document.querySelector("body");
+const score = document.querySelector("#score");
+let runningScore = 0;
+let winScore = 0;
+let loseScore = 0;
+buttons.forEach(button => button.addEventListener('click', function(){
+    let result = playRound(this.id, getComputerChoice());
+    if(runningScore == 5){
+        body.removeChild(div);
+        runningScore = 0;
+        winScore = 0;
+        loseScore = 0;
     }
-    if(winCounter>loseCounter){
-        console.log("You won more rounds.");
+    if(result.charAt(4) == "w"){
+        winScore++;
+        runningScore++;
     }
-    else if(winCounter<loseCounter){
-        console.log("You lost more rounds.");
+    else if(result.charAt(4) == "l"){
+        loseScore++;
+        runningScore++;
     }
     else{
-        console.log("It's a draw.");
+        runningScore++;
     }
-}
+    score.textContent = runningScore;
+    if(runningScore == 5){
+        if(winScore > loseScore){
+            div.textContent = "You won";
+        }
+        else if(winScore < loseScore){
+            div.textContent = "You lost";
+        }
+        else{
+            div.textContent = "It's a draw";
+        }
+        body.appendChild(div);
+    }
+}));
